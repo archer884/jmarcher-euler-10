@@ -4,6 +4,8 @@ Let's start by defining an interface that all our prime testing mechanisms will 
 
 ```rust
 trait Primality {
+    // Most of our implementations will not require a unique reference to self,
+    // but the interface will allow for that just in case one does.
     fn is_prime(&self, n: u64) -> bool;
 }
 ```

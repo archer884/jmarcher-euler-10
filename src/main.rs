@@ -3,11 +3,13 @@ extern crate primal;
 use primal::Sieve;
 
 trait Primality {
-    fn is_prime(&self, n: u64) -> bool;
+    // Most of our implementations will not require a unique reference to self,
+    // but the interface will allow for that just in case one does.
+    fn is_prime(&mut self, n: u64) -> bool;
 }
 
 fn main() {
-    let filter = NaivePrimality;
+    let mut filter = RudyPrimality;
     let sum: u64 = (1..2_000_000)
         .filter(|&n| filter.is_prime(n))
         .sum();
@@ -18,7 +20,7 @@ fn main() {
 struct NaivePrimality;
 
 impl Primality for NaivePrimality {
-    fn is_prime(&self, n: u64) -> bool {
+    fn is_prime(&mut self, n: u64) -> bool {
         fn internal_is_prime(n: u64) -> bool {
             for i in 2..n {
                 if n % i == 0 {
@@ -39,7 +41,7 @@ impl Primality for NaivePrimality {
 struct NaivePrimalityWithRangeLimit;
 
 impl Primality for NaivePrimalityWithRangeLimit {
-    fn is_prime(&self, n: u64) -> bool {
+    fn is_prime(&mut self, n: u64) -> bool {
         fn internal_is_prime(n: u64) -> bool {
             let max = n / 2;
             for i in 2..=max {
@@ -67,8 +69,16 @@ impl SievePrimality {
 }
 
 impl Primality for SievePrimality {
-    fn is_prime(&self, n: u64) -> bool {
+    fn is_prime(&mut self, n: u64) -> bool {
         self.0.is_prime(n as usize)
+    }
+}
+
+struct RudyPrimality;
+
+impl Primality for RudyPrimality {
+    fn is_prime(&mut self, n: u64) -> bool {
+        unimplemented!()
     }
 }
 
@@ -78,8 +88,8 @@ mod tests {
 
     #[test]
     fn naive_primality_works() {
-        let naive = NaivePrimality;
-        let sieve = SievePrimality::new(1000);
+        let mut naive = NaivePrimality;
+        let mut sieve = SievePrimality::new(1000);
 
         for i in 1..=1000 {
             assert_eq!(
@@ -92,8 +102,8 @@ mod tests {
 
     #[test]
     fn naive_with_range_limit_works() {
-        let naive = NaivePrimalityWithRangeLimit;
-        let sieve = SievePrimality::new(1000);
+        let mut naive = NaivePrimalityWithRangeLimit;
+        let mut sieve = SievePrimality::new(1000);
 
         for i in 1..=1000 {
             assert_eq!(
