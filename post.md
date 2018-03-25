@@ -16,7 +16,7 @@ struct NaivePrimality;
 impl Primality for NaivePrimality {
     fn is_prime(&self, n: u64) -> bool {
         fn internal_is_prime(n: u64) -> bool {
-            for i in 2..(n - 1) {
+            for i in 2..n {
                 if n % i == 0 {
                     return false;
                 }
