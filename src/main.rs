@@ -8,7 +8,10 @@ trait Primality {
 
 fn main() {
     let filter = NaivePrimality;
-    let sum: u64 = (1..2_000_000).filter(|&n| filter.is_prime(n)).sum();
+    let sum: u64 = (1..2_000_000)
+        .filter(|&n| filter.is_prime(n))
+        .sum();
+        
     println!("{}", sum);
 }
 

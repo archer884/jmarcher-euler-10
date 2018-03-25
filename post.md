@@ -55,10 +55,49 @@ I'm not clear why primal makes use of a `usize`; I imagine that it has to do wit
 
 # Naive primality check
 
-The code for our solution (aside from the interfaces defined above) is dirt simple and, I think, obviously correct. Here are all three lines, some of which are probably not strictly necessary.
+The code for our solution (aside from the interfaces defined above) is dirt simple and, I think, obviously correct.
 
 ```rust
-let filter = NaivePrimality;
-let sum: u64 = (1..2_000_000).filter(|&n| filter.is_prime(n)).sum();
-println!("{}", sum);
+    let filter = NaivePrimality;
+    let sum: u64 = (1..2_000_000)
+        .filter(|&n| filter.is_prime(n))
+        .sum();
+        
+    println!("{}", sum);
 ```
+
+That said, this code ain't exactly swift. I started running this at the coffee shop where I was originally writing this article and quickly realized my laptop was going to run out of juice before the program actually finished. The runtime listed here is for my desktop, which has some fairly beastly hardware—and is unlikely to run out of juice before finishing something like this.
+
+<!-- runtime goes here -->
+
+Obviously, something has to be done to improve this situation. The challeng requires that this program complete in about the amount of time it takes Duke to sell the secret formula for the Bush family's world-famous baked beans, remember?
+
+# Naive primality check with linear range limit
+
+Almost everyone tries some variation on this. It's pretty obvious that it's an improvement, and it's also a pretty sure bet that it will work. Back when I was first learning C#, I thought to myself, "Self, there's no way that the square root of a given number is ever going to be more than half of that number." This code is similar to what I came up with back then:
+
+```rust
+struct NaivePrimalityWithRangeLimit;
+
+impl Primality for NaivePrimalityWithRangeLimit {
+    fn is_prime(&self, n: u64) -> bool {
+        fn internal_is_prime(n: u64) -> bool {
+            let max = n / 2;
+            for i in 2..=max {
+                if n % i == 0 {
+                    return false;
+                }
+            }
+            true
+        }
+
+        match n {
+            1 => false,
+            2 => true,
+            n => internal_is_prime(n),
+        }
+    }
+}
+```
+
+> Note: I'm using inclusive ranges, which are stable-ish as of `rustc 1.26.0-nightly (f5631d9ac 2018-03-24)`. If you're on the stable branch or have an older version, you'll need to make an adjustment there.
