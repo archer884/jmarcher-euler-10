@@ -250,7 +250,7 @@ TotalMilliseconds : 134.6466
 
 134 milliseconds. Note that a runtime of 134 milliseconds makes this program fast enough that the shell is no longer able to time it accurately; a time in the range of one hundred milliseconds is about the *least* time the shell is able to measure. This applies to macOS as well.
 
-So, point is that if we use the computer's resources efficiently, this problem is *easily* solvable, because the problem is not in fact very big. But how can we be more intelligent? Specifically, how can we be more intelligent *without* resorting to a sieve, which as far as I'm concerned is not a realistic option for someone still learning the basics? Basically, we have to get non-linear.
+So, point is that if we use the computer's resources efficiently, this problem is *easily* solvable, because the problem is not in fact very big. But how can we be more intelligent? Specifically, how can we be more intelligent *without* resorting to a sieve? Because, as I'm concerned, that's just not a realistic option for someone still learning the basics. The answer is that we have to make some kind of *non-linear* improvement.
 
 ## A non-linear reduction in problem space
 
@@ -304,10 +304,10 @@ TotalSeconds      : 1.2473922
 TotalMilliseconds : 1247.3922
 ```
 
-*1.25 seconds.* From nearly three minutes to less than two seconds based on only that change in the range limit. We can try out the other optimizations as well, but do they even matter at this point? In point of fact, the time drops to 725 milliseconds, which is an improvement, but, of course, a linear improvement. Who cares about those?
+*1.25 seconds.* From a quarter of an hour to less than two seconds based on only that change in the range limit. We can try out the other optimizations as well, but do they even matter at this point? In point of fact, the time drops to 725 milliseconds, which is an improvement, but, of course, a linear improvement. Who cares about those?
 
 Let's talk about why this whole thing goes off the rails so fast as soon as we introduce that `sqrt()` function.
 
 # O(dammit are you serious?)
 
-
+<!-- Ask David for assistance on getting the O(bullshit) right-ish. -->
