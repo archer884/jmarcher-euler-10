@@ -310,4 +310,107 @@ Let's talk about why this whole thing goes off the rails so fast as soon as we i
 
 # O(dammit are you serious?)
 
-<!-- Ask David for assistance on getting the O(bullshit) right-ish. -->
+I'm not a big fan of "Order Foo" notation, not least because, as I think I mentioned, my degree is in English, not computer science. However, as I also mentioned, the naive primality test we first employed is "order N squared," or `O(n*n)`, which means that the time needed to run the algorithm grows with the square of N. The reason is that we have N candidates to test, and each candidate must be tested N times. Literally, N multiplied by N.
+
+Switching to an upper bound of `sqrt(n)` doesn't literally mean we test each candidate only one time, but it's pretty close. For instance, the square root of 1,999,999 is like 1400. To a computer, at least, the difference between 1 and 1400 is marginal at best. In terms of asymptotic complexity, it's basically the difference between `O(n*n)` and `O(n)`, the latter of which is clearly *far* more efficient.
+
+Now, the original program was written in Python, which accounts for some portion of the six hour runtime; the naive implementation in Rust took only fifteen minutes, which is about one twenty-fourth of the runtime for the Python version, but the difference in hardware (I don't know what the other person was using) will also make a big difference. All of that said, the number one takeaway here is that *your algorithm is the most important thing.*
+
+Number two is that your algorithm doesn't have to be cutting edge, either; it just needs to be slightly smarter than the average bear.
+
+# Finally...
+
+I suggested to those of you for whom Euler #10 is a little bit too easy that you might try writing a solution that parallelizes the problem. I *did* write my own parallel implementation of, basically, the last thing we talked about above. Here it is.
+
+```rust
+extern crate rayon;
+
+struct Block {
+    min: u64,
+    max: u64,
+}
+
+impl Block {
+    fn new(min: u64, max: u64) -> Self {
+        Self { min, max }
+    }
+    
+    fn blocks_from_range(min: u64, max: u64, block_size: u64) -> Vec<Block> {
+        use std::cmp;
+        
+        let mut blocks = Vec::new();
+
+        let mut a = min;
+        let mut b = cmp::min(max, min + block_size);
+
+        loop {
+            blocks.push(Block::new(a, b));
+
+            if b >= max {
+                return blocks;
+            }
+
+            a = b;
+            b += block_size;
+        }
+    }
+}
+
+struct CandidateRange {
+    cur: u64,
+    max: u64,
+}
+
+impl CandidateRange {
+    fn from_block(block: &Block) -> Self {
+        fn oddify(n: u64) -> u64 {
+            if n & 1 == 0 { n + 1 } else { n }
+        }
+
+        CandidateRange {
+            cur: oddify(block.min),
+            max: block.max,
+        }
+    }
+}
+
+impl Iterator for CandidateRange {
+    type Item = u64;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.cur {
+            current if current >= self.max => None,
+            current => {
+                self.cur += 2;
+                Some(current)
+            }
+        }    
+    }
+}
+
+fn main() {
+    use rayon::prelude::*;
+
+    let blocks = Block::blocks_from_range(3, 2_000_000, 1000);
+    let sum: u64 = blocks.into_par_iter().map(map_block).sum();
+
+    println!("{}", sum + 2);
+}
+
+fn map_block(block: Block) -> u64 {
+    fn is_prime(n: &u64) -> bool {
+        let max = (*n as f64).sqrt() as u64 + 1;
+        for i in 3..max {
+            if n % i == 0 {
+                return false;
+            }
+        }
+        true
+    }
+
+    CandidateRange::from_block(&block).filter(is_prime).sum()
+}
+
+```
+
+Runtime 180 milliseconds. I kind of like the block thing as a way to semi-lazily define work for `rayon` to perform, but based on my testing it's only a fairly small improvement over collecting a vector of actual numbers from an iterator instead. Still, it's kind of an interesting abstraction to me.
