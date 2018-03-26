@@ -250,7 +250,7 @@ TotalMilliseconds : 134.6466
 
 134 milliseconds. Note that a runtime of 134 milliseconds makes this program fast enough that the shell is no longer able to time it accurately; a time in the range of one hundred milliseconds is about the *least* time the shell is able to measure. This applies to macOS as well.
 
-So, point is that if we use the computer's resources efficiently, this problem is *easily* solvable, because the problem is not in fact very big. But how can we be more intelligent? Specifically, how can we be more intelligent *without* resorting to a sieve? Because, as I'm concerned, that's just not a realistic option for someone still learning the basics. The answer is that we have to make some kind of *non-linear* improvement.
+So, point is that if we use the computer's resources intelligently, this problem is *easily* solvable, because the problem is not in fact very big. But how can we be more intelligent? Specifically, how can we be more intelligent *without* resorting to a sieve? Because, as I'm concerned, that's just not a realistic option for someone still learning the basics. The answer is that we have to make some kind of *non-linear* improvement.
 
 ## A non-linear reduction in problem space
 
