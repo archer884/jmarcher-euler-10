@@ -344,7 +344,7 @@ impl Block {
         let mut b = cmp::min(max, min + block_size);
 
         loop {
-            blocks.push(Block::new(a, b));
+            blocks.push(Block::new(a, cmp::min(max, b)));
 
             if b >= max {
                 return blocks;
