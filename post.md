@@ -339,7 +339,6 @@ impl Block {
         use std::cmp;
         
         let mut blocks = Vec::new();
-
         let mut a = min;
         let mut b = cmp::min(max, min + block_size);
 
@@ -413,4 +412,4 @@ fn map_block(block: Block) -> u64 {
 
 ```
 
-Runtime 180 milliseconds. I kind of like the block thing as a way to semi-lazily define work for `rayon` to perform, but based on my testing it's only a fairly small improvement over collecting a vector of actual numbers from an iterator instead. Still, it's kind of an interesting abstraction to me.
+Runtime: 180 milliseconds. I kind of like the block thing as a way to semi-lazily define work for `rayon` to perform, but based on my testing it's only a fairly small improvement over collecting a vector of actual numbers from an iterator instead. Still, it's kind of an interesting abstraction to me.
